@@ -31,7 +31,8 @@ function getTags(req, res, next) {
 function changeTag(req, res, next) {
   const costumeID = req.params.id
   const tagID = req.params.tagid
-  const result = model.changeTag(costumeID, tagID)
+  const body = req.body
+  const result = model.changeTag(costumeID, tagID, body)
   if (result.errors) {
     return next({ status: 400, message: `Could not modify tag`, errors: result.errors })
   }

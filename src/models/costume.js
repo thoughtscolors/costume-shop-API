@@ -6,7 +6,6 @@ function create (body) {
   const name = body.name
   const desc = body.desc
   const price = body.price
-  console.log(price);
   const tags = []
 
   let response
@@ -17,7 +16,7 @@ function create (body) {
     errors.push("price must be more than .01")
     response = { errors }
   } else {
-    const costume = { id: "12345", name, desc, price, tags }
+    const costume = { id: "12", name, desc, price, tags }
     costumes.push(costume)
     response = costume
   }
@@ -25,33 +24,29 @@ function create (body) {
 }
 
 function createTag (costumeID, body) {
-  console.log(costumeID, body, "createTag in model");
   const errors = []
   const name = body.name
   const color = body.color
-  console.log(name, color, errors);
+  let hex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
   let response;
   for (var i = 0; i < costumes.length; i++) {
-    console.log(costumes[i].id === costumeID, "models createTag matching IDs")
     if (costumes[i].id === costumeID) {
-      console.log("were in the if");
       if (name.length > 10) {
         errors.push('name must be 10 characters max')
         response = {errors}
-      } else if (color.length !== 7 || color[0] !== '#') {
+        return response
+      }
+      if (hex.test(color) === false) {
         errors.push('color must be a valid hex code')
         response = {errors}
-      } else {
-        console.log('did we get here');
-        console.log(costumes.tags);
-          const tag = {id: uuid(), name, color}
+        return response
+      }
+          const tag = {id: "12", name, color}
           let newTags = costumes[i].tags
           newTags.push(tag)
           costumes[i].tags = newTags
           response = costumes[i]
-      }
-      return response
-
+          return response
     } else {
     errors.push('Costume ID not found')
     response = {errors}
@@ -66,9 +61,7 @@ function getAll (limit) {
 
 function getTags (costumeID) {
   for (var i = 0; i < costumes.length; i++) {
-    console.log(costumes[i].id === costumeID, "models getTags matching IDs")
     if (costumes[i].id === costumeID) {
-      console.log("getTags if inside");
       return costumes[i].tags
     } else {
       let errors = []
@@ -79,24 +72,44 @@ function getTags (costumeID) {
   }
 }
 
-function changeTag (costumeID, tagID) {
+function changeTag (costumeID, tagID, body) {
   let response;
+  let newName = body.name
+  let newColor = body.color
+  let errors = []
+  let hex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
+
   for (var i = 0; i < costumes.length; i++) {
-    console.log(costumes[i].id === costumeID, "models getTags matching IDs")
     if (costumes[i].id === costumeID) {
       for (var j = 0; j < costumes[i].tags.length; j++) {
         if (costumes[i].tags[j].id === tagID) {
-          response = costumes[i].tags[j].id + " - ID found"
-          return response
+          if (newName === undefined) {
+            newName = costumes[i].tags[j].name
+          }
+          if (newColor === undefined) {
+            newColor = costumes[i].tags[j].color
+          }
+          if (newName.length > 10) {
+            errors.push('name must be 10 characters max')
+            response = {errors}
+            return response
+          }
+          if (hex.test(newColor) === false) {
+            errors.push('color must be a valid hex code')
+            response = {errors}
+            return response
+          }
+        costumes[i].tags[j].name = newName
+        costumes[i].tags[j].color = newColor
+        response = costumes[i].tags[j]
+        return response
         } else {
-          let errors = []
           errors.push('tag ID not found')
           response = {errors}
+          return response
         }
       }
-      return response
     } else {
-      let errors = []
       errors.push('Costume ID not found')
       response = {errors}
       return response
@@ -107,7 +120,6 @@ function changeTag (costumeID, tagID) {
 function deleteTag (costumeID, tagID) {
   let response;
   for (var i = 0; i < costumes.length; i++) {
-    console.log(costumes[i].id === costumeID, "models getTags matching IDs")
     if (costumes[i].id === costumeID) {
       for (var j = 0; j < costumes[i].tags.length; j++) {
         if (costumes[i].tags[j].id === tagID) {
@@ -140,12 +152,12 @@ function getById (id) {
 }
 
 function changeDetails (id, body) {
-  const name = body.name
-  const type = body.type
-  const price = body.price
-  const tags = body.tags
   for (var i = 0; i < costumes.length; i++) {
     if (costumes[i].id === id) {
+      const name = !body.name ? costumes[i].name : body.name
+      const desc = !body.desc ? costumes[i].desc : body.desc
+      const price = !body.price ? costumes[i].price : body.price
+      const tags = body.tags
       costumes[i] = {
         id,
         name,
@@ -154,8 +166,7 @@ function changeDetails (id, body) {
         tags
       }
         return costumes[i]
-      }
-        return {}
+      } else return {}
   }
 }
 
@@ -163,7 +174,7 @@ function deleteCostume(id) {
   for (var i = 0; i < costumes.length; i++) {
     if (costumes[i].id === id) {
       let deletedCostume = costumes[i]
-      delete costumes[i]
+      costumes.splice(i, 1)
         return deletedCostume
       }
         return {}

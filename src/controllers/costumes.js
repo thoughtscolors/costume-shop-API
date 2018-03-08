@@ -1,9 +1,20 @@
-const model = require('../models/snack')
+const model = require('../models/costume')
 
 function create (req, res, next) {
   const result = model.create(req.body)
   if (result.errors) {
-    return next({ status: 400, message: `Could not create new snack`, errors: result.errors })
+    return next({ status: 400, message: `Could not create new costume`, errors: result.errors })
+  }
+  res.status(201).json({ data: result })
+}
+
+function createTag (req, res, next) {
+  console.log(req.params.id, req.body, "id and body in controller");
+  const costumeID = req.params.id
+  const body = req.body
+  const result = model.createTag(costumeID, body)
+  if (result.errors) {
+    return next({ status: 400, message: `Could not create new tag`, errors: result.errors })
   }
   res.status(201).json({ data: result })
 }
@@ -37,9 +48,9 @@ function changeDetails (req, res, next) {
   }
 }
 
-function deleteSnack (req, res, next) {
+function deleteCostume (req, res, next) {
   const id = req.params.id
-  const data = model.deleteSnack(id)
+  const data = model.deleteCostume(id)
   if (Object.keys(data).length === 0) {
     res.status(404).json({error: {message: "File not found"}})
   } else {
@@ -48,4 +59,4 @@ function deleteSnack (req, res, next) {
 }
 
 
-module.exports = { getAll, create, getById, changeDetails, deleteSnack }
+module.exports = { getAll, create, getById, changeDetails, deleteCostume, createTag }

@@ -8,8 +8,8 @@ app.disable('x-powered-by')
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 app.use(bodyParser.json())
 
-const snacksRoutes = require('./src/routes/snacks')
-app.use('/snacks', snacksRoutes)
+const costumesRoutes = require('./src/routes/costumes')
+app.use('/costumes', costumesRoutes)
 
 app.use((err, req, res, next) => {
   const status = err.status || 500

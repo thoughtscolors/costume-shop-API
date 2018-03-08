@@ -16,7 +16,7 @@ function create (body) {
     errors.push("price must be more than .01")
     response = { errors }
   } else {
-    const costume = { id: "12", name, desc, price, tags }
+    const costume = { id: uuid(), name, desc, price, tags }
     costumes.push(costume)
     response = costume
   }
@@ -41,7 +41,7 @@ function createTag (costumeID, body) {
         response = {errors}
         return response
       }
-          const tag = {id: "12", name, color}
+          const tag = {id: uuid(), name, color}
           let newTags = costumes[i].tags
           newTags.push(tag)
           costumes[i].tags = newTags

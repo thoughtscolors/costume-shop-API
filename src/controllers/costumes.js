@@ -19,6 +19,35 @@ function createTag (req, res, next) {
   res.status(201).json({ data: result })
 }
 
+function getTags(req, res, next) {
+  const costumeID = req.params.id
+  const result = model.getTags(costumeID)
+  if (result.errors) {
+    return next({ status: 400, message: `Could not get tag`, errors: result.errors })
+  }
+  res.status(201).json({ data: result })
+}
+
+function changeTag(req, res, next) {
+  const costumeID = req.params.id
+  const tagID = req.params.tagid
+  const result = model.changeTag(costumeID, tagID)
+  if (result.errors) {
+    return next({ status: 400, message: `Could not modify tag`, errors: result.errors })
+  }
+  res.status(201).json({ data: result })
+}
+
+function deleteTag(req, res, next) {
+  const costumeID = req.params.id
+  const tagID = req.params.tagid
+  const result = model.deleteTag(costumeID, tagID)
+  if (result.errors) {
+    return next({ status: 400, message: `Could not delete tag`, errors: result.errors })
+  }
+  res.status(201).json({ data: result })
+}
+
 function getAll (req, res, next) {
   const limit = req.query.limit
   const data = model.getAll(limit)
@@ -59,4 +88,14 @@ function deleteCostume (req, res, next) {
 }
 
 
-module.exports = { getAll, create, getById, changeDetails, deleteCostume, createTag }
+module.exports = {
+  getAll,
+  create,
+  getById,
+  changeDetails,
+  deleteCostume,
+  createTag,
+  getTags,
+  changeTag,
+  deleteTag
+}

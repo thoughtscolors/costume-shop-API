@@ -48,7 +48,7 @@ function createTag (costumeID, body) {
           let newTags = costumes[i].tags
           newTags.push(tag)
           costumes[i].tags = newTags
-          response = costumes
+          response = costumes[i]
       }
       return response
 
@@ -62,6 +62,72 @@ function createTag (costumeID, body) {
 
 function getAll (limit) {
   return limit ? costumes.slice(0, limit) : costumes
+}
+
+function getTags (costumeID) {
+  for (var i = 0; i < costumes.length; i++) {
+    console.log(costumes[i].id === costumeID, "models getTags matching IDs")
+    if (costumes[i].id === costumeID) {
+      console.log("getTags if inside");
+      return costumes[i].tags
+    } else {
+      let errors = []
+      errors.push('Costume ID not found')
+      response = {errors}
+      return response
+    }
+  }
+}
+
+function changeTag (costumeID, tagID) {
+  let response;
+  for (var i = 0; i < costumes.length; i++) {
+    console.log(costumes[i].id === costumeID, "models getTags matching IDs")
+    if (costumes[i].id === costumeID) {
+      for (var j = 0; j < costumes[i].tags.length; j++) {
+        if (costumes[i].tags[j].id === tagID) {
+          response = costumes[i].tags[j].id + " - ID found"
+          return response
+        } else {
+          let errors = []
+          errors.push('tag ID not found')
+          response = {errors}
+        }
+      }
+      return response
+    } else {
+      let errors = []
+      errors.push('Costume ID not found')
+      response = {errors}
+      return response
+    }
+  }
+}
+
+function deleteTag (costumeID, tagID) {
+  let response;
+  for (var i = 0; i < costumes.length; i++) {
+    console.log(costumes[i].id === costumeID, "models getTags matching IDs")
+    if (costumes[i].id === costumeID) {
+      for (var j = 0; j < costumes[i].tags.length; j++) {
+        if (costumes[i].tags[j].id === tagID) {
+          response = tagID + " " + costumes[i].tags[j].name + " - Tag Deleted"
+          costumes[i].tags.splice(j, 1)
+          return response
+        } else {
+          let errors = []
+          errors.push('tag ID not found')
+          response = {errors}
+        }
+      }
+      return response
+    } else {
+      let errors = []
+      errors.push('Costume ID not found')
+      response = {errors}
+      return response
+    }
+  }
 }
 
 function getById (id) {
@@ -105,4 +171,14 @@ function deleteCostume(id) {
 }
 
 
-module.exports = { getAll, create, getById, changeDetails, deleteCostume, createTag }
+module.exports = {
+  getAll,
+  create,
+  getById,
+  changeDetails,
+  deleteCostume,
+  createTag,
+  getTags,
+  changeTag,
+  deleteTag
+}
